@@ -19,4 +19,5 @@ def_terrain_defense = 0.1
 results = CombatSimulator.simulate_combat(atk_mage, 0.2, False,
                                           def_sword, 0.1, False)
 
-print(results)
+for (final_atk_health, final_def_health), prob in results.items():
+    print(f"Attacker {final_atk_health}, defender {final_def_health}: probability {100 * prob}%")
