@@ -81,13 +81,13 @@ class BaseDamageProvider:
         return BaseDamageProvider(unit_index, damage_table, crit_table, counter_table)
     
     def get_base_damage(self, atk_idx, def_idx) -> int:
-        return self.damage_table[atk_idx, def_idx]
+        return self.damage_table[atk_idx, def_idx].item()
     
     def get_crit_multiplier(self, unit_idx) -> float:
-        return self.crit_table
+        return self.crit_table[unit_idx].item()
     
     def can_counter(self, unit_idx) -> bool:
-        return self.counter_table[unit_idx]
+        return self.counter_table[unit_idx].item()
         
         
         
