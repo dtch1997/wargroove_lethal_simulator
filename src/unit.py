@@ -7,6 +7,7 @@ Created on Fri Sep  4 23:39:53 2020
 
 
 import numpy as np
+import collections
 # import src.assets as assets
 
 class RngProvider():
@@ -18,7 +19,7 @@ class Unit:
     Unit info data class, plus a high-level wrapper around BaseDamageProvider
     """
     
-    def __init__(self, unit_type: int, unit_id, health, base_damage_provider):
+    def __init__(self, unit_type: int, base_damage_provider, health=100, unit_id=None):
         """
         unit_type: An integer. Constructed canonically by assets.utils.BaseDamageProvider
         unit_id: A unique id assigned to this particular unit instances
@@ -29,6 +30,12 @@ class Unit:
         self.unit_id = unit_id
         self.health = health
         self.base_damage_provider = base_damage_provider
+        
+    @staticmethod
+    def from_name(unit_name, base_damage_provider, health=100, unit_id = None):
+        unit_type = base_damage_provider.unit_index.get_index(unit_name)
+        return Unit(unit_type, base_damage_provider, health, unit_id)
+        
         
     @property
     def crit_multiplier(self):
@@ -148,23 +155,44 @@ class CombatSimulator:
     def simulate_combat(atk_unit, atk_terrain_defense, is_atk_crit, 
                         def_unit, def_terrain_defense, is_def_crit,
                         depth = 4):
+        """
+        Simulate a combat between atk_unit and def_unit 
+        deoth: Number of decimal places with which to calculate raw probabilities
+        
+        Returns:
+            Dictionary of (final_atk_health, final_def_health) : probability 
+        """
+        
+        # Dict[(final_atk_health, final_deF_health)]: probability
+        results = collections.defaultdict(int)
         
         atk_outcomes = CombatSimulator.calculate_probabilities(
             base_damage = atk_unit.get_base_damage(def_unit),
             atk_health = atk_unit.health,
             def_health = def_unit.health,
-            terrain_defense = atk_terrain_defense,
+            terrain_defense = def_terrain_defense,
             crit_multiplier = atk_unit.crit_multiplier if is_atk_crit else 1,
             depth = depth
-            )
+        )
         
-        for atk_dmg, a_prob in atk_outcomes:
-            
-        
-        
-
-        
-
+        for atk_dmg, atk_prob in atk_outcomes.items():
+            final_def_health = max(0, def_unit.health - atk_dmg)
+            if final_def_health == 0 or not def_unit.can_counter:
+                results[(atk_unit.health, final_def_health)] += atk_prob
+            else:
+                conditional_def_outcomes = CombatSimulator.calculate_probabilities(
+                    base_damage = def_unit.get_base_damage(atk_unit),
+                    atk_health = final_def_health,
+                    def_health = atk_unit.health,
+                    terrain_defense = atk_terrain_defense,
+                    crit_multiplier = def_unit.crit_multiplier if is_def_crit else 1,
+                    depth = depth
+                )    
+                for def_dmg, def_prob in conditional_def_outcomes.items():
+                    final_atk_health = max(0, atk_unit.health - def_dmg)
+                    results[(final_atk_health, final_def_health)] += atk_prob * def_prob
+                    
+        return results
 
 class GameBoard:
     def __init__(self, terrain_layer: np.ndarray):
