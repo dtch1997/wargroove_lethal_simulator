@@ -6,13 +6,13 @@ Created on Sat Sep  5 12:31:38 2020
 """
 
 
-from src.combat_simulator import CombatSimulator
-from src.unit import Unit, UnitDataProvider
+from src.assets.utils import BaseDamageProvider
+from src.unit import Unit, CombatSimulator
 
-provider = UnitDataProvider.load("assets/unitdata_2.0.json")
+base_damage_provider = BaseDamageProvider.load("src/assets/damagetables/mindmg_2.0.json")
 
-atk_mage = Unit.from_name('mage', provider)
-def_sword = Unit.from_name('soldier', provider)
+atk_mage = Unit.from_name('mage', base_damage_provider)
+def_sword = Unit.from_name('soldier', base_damage_provider)
 atk_terrain_defense = 0.2
 def_terrain_defense = 0.1
 

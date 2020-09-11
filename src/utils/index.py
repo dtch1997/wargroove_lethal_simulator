@@ -33,6 +33,7 @@ class Index:
             raise ValueError(idx)
         return self.idx2val[idx]
     
+    @property
     def values(self):
         return self.val2idx.keys()
         
