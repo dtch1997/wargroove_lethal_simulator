@@ -39,7 +39,7 @@ class UnitDataProvider:
         counter_table = np.zeros(shape = unit_index.size, dtype=bool)
         movement_table = np.zeros(shape = [unit_index.size, 2])
         
-        for atk_unit_name in unit_index.values():
+        for atk_unit_name in unit_index.values:
             atk_idx = unit_index.get_index(atk_unit_name)
             if atk_unit_name not in table_json.keys():
                 continue
@@ -54,7 +54,7 @@ class UnitDataProvider:
             counter_table[atk_idx] = unit_info['canCounter']
             
             movement_table[atk_idx, 0] = movetype_index.get_index(unit_info['moveType'])
-            movement_table[atk_idx, 1] = movetype_index.get_index(unit_info['moveRange'])
+            movement_table[atk_idx, 1] = unit_info['moveRange']
     
         return UnitDataProvider(unit_index, movetype_index,
                                 damage_table, crit_table, counter_table, movement_table)
