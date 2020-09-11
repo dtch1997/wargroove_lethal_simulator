@@ -29,7 +29,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 4,
+    "moveType": "foot",
+    "canCapture": true,
   },
   "dog":{
     "damage":{
@@ -61,7 +64,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 5,
+    "moveType": "foot",
+    "canCapture": false
   },
   "spearman":{
     "damage":{
@@ -93,7 +99,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 3,
+    "moveType": "foot",
+    "canCapture": true
   },
   "archer":{
     "damage":{
@@ -125,7 +134,10 @@
       "crystal":100
     },
     "crit":1.35,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 3,
+    "moveType": "foot",
+    "canCapture": true
   },
   "mage":{
     "damage":{
@@ -157,7 +169,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 5,
+    "moveType": "foot",
+    "canCapture": true
   },
   "cavalry":{
     "damage":{
@@ -189,7 +204,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 6,
+    "moveType": "mounted",
+    "canCapture": false,
   },
   "ballista":{
     "damage":{
@@ -221,7 +239,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":false
+    "canCounter":false,
+    "moveRange": 6,
+    "moveType": "wheel",
+    "canCapture": false,
   },
   "trebuchet":{
     "damage":{
@@ -253,7 +274,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":false
+    "canCounter":false,
+    "moveRange": 6,
+    "moveType": "wheel",
+    "canCapture": false
   },
   "giant":{
     "damage":{
@@ -285,7 +309,10 @@
       "crystal":100
     },
     "crit":2.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 5,
+    "moveType": "foot",
+    "canCapture": false,
   },
   "aeronaut":{
     "damage":{
@@ -317,7 +344,10 @@
       "crystal":100
     },
     "crit":1.25,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 5,
+    "moveType": "flying",
+    "canCapture": false
   },
   "skyrider":{
     "damage":{
@@ -349,7 +379,10 @@
       "crystal":null
     },
     "crit":2,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 7,
+    "moveType": "flying",
+    "canCapture": false
   },
   "dragon":{
     "damage":{
@@ -381,7 +414,10 @@
       "crystal":null
     },
     "crit":2,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 8,
+    "moveType": "flying",
+    "canCapture": false,
   },
   "turtle":{
     "damage":{
@@ -413,7 +449,10 @@
       "crystal":null
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 12,
+    "moveType": "naval",
+    "canCapture": false,
   },
   "harpoonship":{
     "damage":{
@@ -445,7 +484,10 @@
       "crystal":null
     },
     "crit":1.5,
-    "canCounter":false
+    "canCounter":false,
+    "moveRange": 4,
+    "moveType": "naval",
+    "canCapture": false,
   },
   "warship":{
     "damage":{
@@ -477,7 +519,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 8,
+    "moveType": "naval",
+    "canCapture": true,
   },
   "amphibian":{
     "damage":{
@@ -509,7 +554,10 @@
       "crystal":100
     },
     "crit":2,
-    "canCounter":false
+    "canCounter":false,
+    "moveRange": 4,
+    "moveType": "amphibious",
+    "canCapture": true,
   },
   "rifleman": {
     "damage":{
@@ -541,7 +589,10 @@
       "crystal":100
     },
     "crit":1.5,
-    "canCounter":false
+    "canCounter":false,
+    "moveRange": 4,
+    "moveType": "foot",
+    "canCapture": true,
   },
   "commander":{
     "damage":{
@@ -573,7 +624,10 @@
       "crystal":100
     },
     "crit":1,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 4,
+    "moveType": "foot",
+    "canCapture": true,
   },
   "building":{
     "damage":{
@@ -605,7 +659,10 @@
       "crystal":null
     },
     "crit":1,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 0,
+    "moveType": "structure",
+    "canCapture": false
   },
   "hq":{
     "damage":{
@@ -637,7 +694,10 @@
       "crystal":null
     },
     "crit":1,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 0,
+    "moveType": "structure",
+    "canCapture": false
   },
   "grooves":{
     "damage":{
@@ -669,6 +729,9 @@
       "crystal":100
     },
     "crit":1,
-    "canCounter":true
+    "canCounter":true,
+    "moveRange": 0,
+    "moveType": "structure",
+    "canCapture": false
   }
 }
