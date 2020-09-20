@@ -30,6 +30,10 @@ class Unit:
     def from_name(unit_name, unit_data_provider, health=100, unit_id = None):
         unit_type = unit_data_provider.unit_index.get_index(unit_name)
         return Unit(unit_type, unit_data_provider, health, unit_id)
+    
+    @property
+    def name(self):
+        return self.unit_data_provider.unit_index.get_value(self.unit_type)
         
         
     @property
@@ -50,4 +54,7 @@ class Unit:
     @property
     def movement_type(self):
         return self.unit_data_provider.get_movement_type(self.unit_type)
+    
+    def __repr__(self):
+        return f"({self.name}, {self.health})"
     

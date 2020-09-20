@@ -14,14 +14,20 @@ class Index:
     """
     def __init__(self, values = []):
         self.val2idx = {}
-        self.idx2val = []
+        self.idx2val = {}
+        self.next_index = 0
         for value in values:
             self.add(value)
     
     def add(self, val):
-        next_idx = self.size
-        self.idx2val.append(val)
-        self.val2idx[val] = next_idx
+        self.idx2val[self.next_index] = val
+        self.val2idx[val] = self.next_index
+        self.next_index += 1
+        
+    def remove(self, val):
+        idx = self.val2idx[val]
+        del self.val2idx[val]
+        del self.idx2val[idx]
         
     def get_index(self, val):
         if val not in self.val2idx:

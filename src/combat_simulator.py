@@ -9,8 +9,7 @@ Created on Fri Sep  4 23:39:53 2020
 import numpy as np
 import collections
     
-class CombatSimulator:
-
+class CombatSimulator:       
     @staticmethod
     def calculate_damage(base_damage: float, 
                          atk_health: int,
@@ -56,7 +55,6 @@ class CombatSimulator:
          
         """
         # Note that dmg is an increasing function of rng_val     
-    
         def calculate_thresholds_helper_( base_damage: int, 
                                         atk_health: int,
                                         def_health: int,
@@ -71,15 +69,13 @@ class CombatSimulator:
             """
             rng_val = np.linspace(rng_low, rng_high, num_branches+1)
             dmg = CombatSimulator.calculate_damage(base_damage, atk_health, def_health, terrain_defense, crit_multiplier, rng_val)
-            if depth == 0:
-                return {dmg[-1].item(): rng_high}
             
-            thresholds = {}
+            thresholds = {dmg[0]: rng_low}
             for i in range(rng_val.shape[0] - 1):
                 dmg_low, dmg_high = dmg[i].item(), dmg[i+1].item()
                 rng_low, rng_high = rng_val[i].item(), rng_val[i+1].item()
                 
-                if dmg_high > dmg_low:
+                if dmg_high > dmg_low and depth > 0:
                     thresholds.update(calculate_thresholds_helper_(base_damage, atk_health, def_health, terrain_defense, crit_multiplier, rng_low, rng_high, num_branches, depth-1))
             return thresholds
         
@@ -93,9 +89,8 @@ class CombatSimulator:
                                                  num_branches = 10,
                                                  depth=depth)
         # Manually add in the minimum damage that gets skipped
-        min_dmg = min(thresholds.keys())
-        if thresholds[min_dmg] > 0:
-            thresholds[min_dmg-1] = 0
+        min_dmg = CombatSimulator.calculate_damage(base_damage, atk_health, def_health, terrain_defense, crit_multiplier, np.array([0]))
+        thresholds[min_dmg.item()-1] = 0
             
         # Calculate the probabilities of each outcome
         probs = {}
@@ -103,7 +98,7 @@ class CombatSimulator:
         for dmg in dmgs:
             threshold = thresholds[dmg]
             next_threshold = thresholds[dmg+1] if (dmg+1) in thresholds else 1.0
-            probability = np.around(next_threshold - threshold, decimals= depth)
+            probability = next_threshold - threshold
             probs[dmg] = probability
             
         return probs
@@ -151,3 +146,69 @@ class CombatSimulator:
                     
         return results
     
+    @staticmethod    
+    def simulate_combat_sequence(defend_instance, attack_instances, depth=4):
+        (def_unit, def_terrain_defense, is_def_crit) = defend_instance
+        state_dist_history = [{def_unit.health: 1}]
+        
+        for atk_idx, atk_inst in enumerate(attack_instances):
+            # If we're on 0-indexed attack N, N attacks have occurred. 
+            old_state_distribution = state_dist_history[atk_idx]
+            new_state_distribution = collections.defaultdict(float)
+            (atk_unit, atk_terrain_defense, is_atk_crit, requires_suicide) = atk_inst
+            for state, state_prob in old_state_distribution.items():
+                if state <= 0:
+                    # Defender health less than 0 is used for error tracking
+                    # If state < 0, (state + 1000) is the index of a failed suicide
+                    # State == 0 indicates lethal
+                    transition_prob = 1
+                    new_state_distribution[new_state] += state_prob * transition_prob
+                    
+                else:
+                    # Set defender health for combat simulation
+                    # Track the original health for resetting later
+                    orig_def_health = def_unit.health
+                    def_unit.health = state
+                    
+                    combat_results = CombatSimulator.simulate_combat(
+                        atk_unit, atk_terrain_defense, is_atk_crit, 
+                        def_unit, def_terrain_defense, is_def_crit,
+                        depth = depth
+                    )
+                    for (final_atk_health, final_def_health), transition_prob in combat_results.items():
+                        if requires_suicide and final_atk_health > 0:
+                            new_state = -1000 + atk_idx
+                        else:
+                            new_state = final_def_health
+                    
+                        new_state_distribution[new_state] += state_prob * transition_prob
+                    # Reset defending unit health to original
+                    def_unit.health = orig_def_health
+            state_dist_history.append(new_state_distribution)
+        return state_dist_history
+    
+    @staticmethod
+    def get_probability_attacker_death(combat_results):
+        """
+        combat results: 
+            Dictionary of (final_atk_health, final_def_health) : probability
+            Returned by CombatSimulator.simulate_combat()
+        """
+        p = 0
+        for (final_atk_health, _), prob in combat_results.items():
+            if final_atk_health == 0:
+                p += prob
+        return p
+    
+    @staticmethod
+    def get_probability_defender_death(combat_results):
+        """
+        combat results: 
+            Dictionary of (final_atk_health, final_def_health) : probability
+            Returned by CombatSimulator.simulate_combat()
+        """
+        p = 0
+        for (_, final_def_health), prob in combat_results.items():
+            if final_def_health == 0:
+                p += prob
+        return p        
